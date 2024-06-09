@@ -21,7 +21,7 @@ public class Topic_05_Textbox_TextArea {
 	String projectPath = System.getProperty("user.dir");
 	JavascriptExecutor jsExecutor;
 	
-	String firstName, lastName, fullName, emailAddress, password, employeeId;
+	String firstName, lastName, fullName, emailAddress, password, employeeId, passport, comments;
 	
 
 	@BeforeClass
@@ -37,7 +37,9 @@ public class Topic_05_Textbox_TextArea {
 		lastName = "Thanh";
 		fullName = firstName + " " + lastName;
 		emailAddress = "thanhle" + getRandomNumber() + "@gmail.com";
-		password = "123456";
+		password = "Thah1234?@";
+		passport = "12722-121-12-1127";
+		comments = "This is a generate data";
 	}
 
 	@Test
@@ -116,11 +118,90 @@ public class Topic_05_Textbox_TextArea {
 		
 		sleepInsecond(2);
 		
-		driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).sendKeys(firstName + lastName);
+		String userFull = firstName + employeeId;
+		driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).sendKeys(userFull);
 		driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).sendKeys(password);
 		driver.findElement(By.xpath("//label[text()='Confirm Password']/parent::div/following-sibling::div/input")).sendKeys(password);
 		
 		driver.findElement(By.xpath("//button[text() = ' Save ']")).click();
+		
+		sleepInsecond(10);
+		
+		WebElement firstNameElement = driver.findElement(By.xpath("//input[@name='firstName']"));
+		String firstNameStr = firstNameElement.getAttribute("_value");
+		System.out.print("first name: " + firstNameStr);
+		Assert.assertEquals(firstName, firstNameStr);
+		
+		WebElement lastNameElement = driver.findElement(By.xpath("//input[@name='lastName']"));
+		String lastNameStr = lastNameElement.getAttribute("_value");
+		System.out.print("last name: " + lastNameStr);
+		Assert.assertEquals(lastName, lastNameStr);
+
+		WebElement employeeElement = driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input"));
+		String curEmployeeId = employeeElement.getAttribute("_value");
+		System.out.print("curEmployeeId: " + curEmployeeId);
+		Assert.assertEquals(employeeId, curEmployeeId);
+		
+		sleepInsecond(2);
+		driver.findElement(By.xpath("//a[text()='Immigration']/parent::div")).click();
+		
+		sleepInsecond(5);
+		jsExecutor.executeScript("arguments[0].click();", driver.findElement(By.xpath("//h6[text()='Assigned Immigration Records']/following-sibling::button")));
+	
+		sleepInsecond(5);
+		driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).sendKeys(passport);
+		driver.findElement(By.xpath("//label[text()='Comments']/parent::div/following-sibling::div/textarea")).sendKeys(comments);
+		
+		driver.findElement(By.xpath("//button[text() = ' Save ']")).click();
+		
+		sleepInsecond(5);
+		driver.findElement(By.xpath("//i[@class='oxd-icon bi-pencil-fill']/parent::button")).click();
+		
+		sleepInsecond(3);
+		WebElement numberElement = driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input"));
+		String numberElementStr = numberElement.getAttribute("_value");
+		System.out.print("numberElementStr: " + numberElementStr);
+		Assert.assertEquals(passport, numberElementStr);
+		
+		WebElement commentsnumberElement = driver.findElement(By.xpath("//label[text()='Comments']/parent::div/following-sibling::div/textarea"));
+		String commentsnumberStr = commentsnumberElement.getAttribute("_value");
+		System.out.print("commentsnumberStr: " + commentsnumberStr);
+		Assert.assertEquals(comments, commentsnumberStr);
+		
+		sleepInsecond(2);
+		
+		driver.findElement(By.xpath("//li[@class='oxd-userdropdown']")).click();
+		
+		driver.findElement(By.xpath("//a[text()='Logout']")).click();
+		
+		sleepInsecond(5);
+		driver.findElement(By.xpath("//input[@name='username']")).sendKeys(userFull);
+		driver.findElement(By.xpath("//input[@name='password']")).sendKeys(password);
+		System.out.print("userFull: " + userFull);
+		System.out.print("password: " + password);
+		driver.findElement(By.xpath("//div[@class= \"oxd-form-actions orangehrm-login-action\"]")).click();
+		
+		sleepInsecond(5);
+		driver.findElement(By.xpath("//span[text()='My Info']")).click();
+		
+		sleepInsecond(5);
+		Assert.assertEquals(driver.findElement(By.name("firstName")).getAttribute("_value"), firstName);
+		Assert.assertEquals(driver.findElement(By.name("lastName")).getAttribute("_value"), lastName);
+		Assert.assertEquals(driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getAttribute("_value"), employeeId);
+	
+		sleepInsecond(5);
+		driver.findElement(By.xpath("//a[text()='Immigration']/parent::div")).click();
+		
+		sleepInsecond(5);
+		driver.findElement(By.xpath("//i[@class='oxd-icon bi-pencil-fill']/parent::button")).click();
+		
+		numberElementStr = numberElement.getAttribute("_value");
+		System.out.print("numberElementStr: " + numberElementStr);
+		Assert.assertEquals(passport, numberElementStr);
+		
+		commentsnumberStr = commentsnumberElement.getAttribute("_value");
+		System.out.print("commentsnumberStr: " + commentsnumberStr);
+		Assert.assertEquals(comments, commentsnumberStr);
 	}
 
 	@AfterClass
